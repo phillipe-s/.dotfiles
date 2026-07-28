@@ -76,9 +76,5 @@ fi
 alias ..='cd ..'
 alias c='clear'
 
-if command -v bat &>/dev/null; then
-    alias cat='bat'
-fi
-
 alias n='nvim'
 alias gg='lazygit'

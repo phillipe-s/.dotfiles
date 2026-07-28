@@ -23,6 +23,7 @@ background-opacity-cells = true
 # Other
 adjust-cursor-thickness = 1
 mouse-hide-while-typing = true
+shell-integration-features = true
 
 # Keybinds
 #keybind = global:opt+space=toggle_quick_terminal
