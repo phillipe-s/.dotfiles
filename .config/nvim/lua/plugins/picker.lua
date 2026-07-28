@@ -85,7 +85,6 @@ return {
                 Snacks.picker.smart({
                     multi = {
                         "buffers",
-                        "recent",
                         { source = "git_files", untracked = true },
                     },
                 })

@@ -16,7 +16,7 @@ return {
         "folke/noice.nvim",
         event = "VimEnter",
         dependencies = { "MunifTanjim/nui.nvim" },
-        opts = { presets = { lsp_doc_border = true } },
+        opts = { lsp = { progress = { enabled = false }}, presets = { lsp_doc_border = true } },
     },
     {
         "HiPhish/rainbow-delimiters.nvim",

@@ -9,6 +9,8 @@ return {
                 ensure_installed = {
                     "stylua",
                     "cspell",
+                    "ruff",
+                    "clang-format",
                 },
             },
         },
@@ -16,6 +18,7 @@ return {
     opts = {
         ensure_installed = {
             "lua_ls",
+            "clangd",
         },
         automatic_enable = {
             exclude = { "stylua" },

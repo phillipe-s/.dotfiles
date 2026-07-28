@@ -16,6 +16,7 @@ return {
     },
     config = function(_, opts)
         require("copilot").setup(opts)
+        require("copilot.command").disable()
         require("copilot.status").register_status_notification_handler(function()
             vim.schedule(function()
                 if package.loaded.lualine then

@@ -41,6 +41,17 @@ local function formatter()
     return "󰉼 " .. table.concat(names, ", ")
 end
 
+local function linters()
+    local lint = require("lint")
+    local names = lint.linters_by_ft[vim.bo.filetype] or {}
+
+    if vim.tbl_isempty(names) then
+        return ""
+    end
+
+    return "󰃢 " .. table.concat(names, ", ")
+end
+
 local function copilot_status()
     local ok, status = pcall(require, "copilot.status")
     if ok and status.data.status == "InProgress" then
@@ -95,7 +106,10 @@ return {
                             end,
                         },
                     },
-                    lualine_x = { { formatter, cond = wide_statusline } },
+                    lualine_x = {
+                        { linters, cond = wide_statusline },
+                        { formatter, cond = wide_statusline },
+                    },
                     lualine_y = {
                         {
                             "lsp_status",
