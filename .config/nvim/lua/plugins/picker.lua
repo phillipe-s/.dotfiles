@@ -66,13 +66,13 @@ return {
     },
     init = function()
         local function set_default_project_picker_keymaps()
-            set("n", "<D-p>", function() Snacks.picker.smart() end, { desc = "pick [p]roject files" })
+            set("n", "<C-p>", function() Snacks.picker.smart() end, { desc = "pick [p]roject files" })
             set("n", "<leader>pw", function() Snacks.picker.grep() end, { desc = "[p]ick [w]ords" })
             set("n", "<leader>pW", function() Snacks.picker.grep_word() end, { desc = "[p]ick [W]ord" })
         end
 
         set("n", "<leader>pf", function() Snacks.picker.files() end, { desc = "[p]ick [f]iles (all)" })
-        set("n", "<D-P>", function() Snacks.picker.resume() end, { desc = "[P]icker resume" })
+        set("n", "<C-S-p>", function() Snacks.picker.resume() end, { desc = "[P]icker resume" })
         set("n", "<leader>ps", function() Snacks.picker.lsp_symbols() end, { desc = "[p]ick [s]ymbols (document)" })
         set("n", "<leader>pS", function() Snacks.picker.lsp_workspace_symbols() end, { desc = "[p]ick [S]ymbols (workspace)" })
         set("n", "<leader>pb", function() Snacks.picker.buffers() end, { desc = "[p]ick [b]uffers" })
@@ -81,7 +81,7 @@ return {
         set("n", "<leader>pp", function() Snacks.picker() end, { desc = "[p]ick [p]icker" })
 
         local function set_git_project_picker_keymaps()
-            set("n", "<D-p>", function()
+            set("n", "<C-p>", function()
                 Snacks.picker.smart({
                     multi = {
                         "buffers",

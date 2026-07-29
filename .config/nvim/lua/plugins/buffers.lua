@@ -68,11 +68,11 @@ return {
             },
         },
         keys = {
-            { "<D-1>", "<Cmd>BufferGoto 1<CR>", desc = "Go to buffer 1" },
-            { "<D-2>", "<Cmd>BufferGoto 2<CR>", desc = "Go to buffer 2" },
-            { "<D-3>", "<Cmd>BufferGoto 3<CR>", desc = "Go to buffer 3" },
-            { "<D-4>", "<Cmd>BufferGoto 4<CR>", desc = "Go to buffer 4" },
-            { "<D-5>", "<Cmd>BufferGoto 5<CR>", desc = "Go to buffer 5" },
+            { "<C-1>", "<Cmd>BufferGoto 1<CR>", desc = "Go to buffer 1" },
+            { "<C-2>", "<Cmd>BufferGoto 2<CR>", desc = "Go to buffer 2" },
+            { "<C-3>", "<Cmd>BufferGoto 3<CR>", desc = "Go to buffer 3" },
+            { "<C-4>", "<Cmd>BufferGoto 4<CR>", desc = "Go to buffer 4" },
+            { "<C-5>", "<Cmd>BufferGoto 5<CR>", desc = "Go to buffer 5" },
             {
                 "<leader>bp",
                 function()

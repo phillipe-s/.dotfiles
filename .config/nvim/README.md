@@ -61,12 +61,12 @@ Cursor position and fold state are saved when a file leaves the window and resto
 | Area | Key | Action |
 | --- | --- | --- |
 | Mode | `jk` or `esc` | Leave insert mode |
-| Files | `⌘P` | Smart project picker |
+| Files | `Ctrl+P` | Smart project picker |
 | Files | `<leader>pw` | Search text across the project |
 | Explorer | `<leader>e` / `<leader>E` | Open Mini Files at the working directory / current file |
 | Explorer | `-` | Open the parent directory with Oil |
 | Buffers | `<leader>bp` / `<leader>bd` | Pin or close the current buffer |
-| Buffers | `⌘1` … `⌘5` | Jump directly to a buffer |
+| Buffers | `Ctrl+1` … `Ctrl+5` | Jump directly to a buffer |
 | Editing | `<leader>f` | Format the file or selection |
 | Editing | `<leader>p` | Paste over a selection without replacing the register |
 | Windows | `<leader>s` / `<leader>S` | Open a vertical / horizontal split |

@@ -17,25 +17,13 @@ window-padding-x = 12, 0
 # window-padding-y = 12, 1
 window-padding-color = extend-always
 background-opacity = 0.85
-background-blur = 16
+background-blur = true
 background-opacity-cells = true
 
 # Other
 adjust-cursor-thickness = 1
 mouse-hide-while-typing = true
-shell-integration-features = true
-
-# Keybinds
-#keybind = global:opt+space=toggle_quick_terminal
 window-save-state = always
-keybind = cmd+shift+p=unbind
-keybind = cmd+1=unbind
-keybind = cmd+digit_1=unbind
-keybind = cmd+2=unbind
-keybind = cmd+digit_2=unbind
-keybind = cmd+3=unbind
-keybind = cmd+digit_3=unbind
-keybind = cmd+4=unbind
-keybind = cmd+digit_4=unbind
-keybind = cmd+5=unbind
-keybind = cmd+digit_5=unbind
+shell-integration-features = true
+macos-option-as-alt = true
+
