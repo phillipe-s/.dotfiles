@@ -39,6 +39,11 @@ if command -v fnm &>/dev/null; then
     eval "$(fnm env --use-on-cd --shell zsh)"
 fi
 
+# Fix cursor in tmux
+if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
+  source "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration"
+fi
+
 # === Plugins ===
 ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 

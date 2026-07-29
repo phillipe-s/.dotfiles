@@ -84,6 +84,13 @@ return {
                 desc = "[b]uffer [p]in",
             },
             { "<leader>bd", "<Cmd>BufferClose<CR>", desc = "[b]uffer [d]elete" },
+            {
+                "<leader>bt",
+                function()
+                    vim.o.showtabline = vim.o.showtabline == 0 and 2 or 0
+                end,
+                desc = "[b]ufferline [t]oggle",
+            },
         },
         config = function(_, opts)
             setup_preview_buf_marker()

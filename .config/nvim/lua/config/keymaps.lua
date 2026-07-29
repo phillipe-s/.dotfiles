@@ -33,8 +33,3 @@ set("n", "x", '"_x', { desc = "delete char without yanking"})
 -- === SPLITS === --
 set("n", "<leader>s", "<cmd>vsplit<CR>", { desc = "Split window vertically" })
 set("n", "<leader>S", "<cmd>split<CR>", { desc = "Split window horizontally" })
-
-set("n", "<C-h>", "<C-w>h", { desc = "Move to left split" })
-set("n", "<C-j>", "<C-w>j", { desc = "Move to lower split" })
-set("n", "<C-k>", "<C-w>k", { desc = "Move to upper split" })
-set("n", "<C-l>", "<C-w>l", { desc = "Move to right split" })

@@ -12,6 +12,11 @@ local function lualine_theme()
     return theme
 end
 
+local function muted_component_color()
+    local spec = require("github-theme.spec").load("github_dark_default")
+    return { bg = spec.bg0, fg = spec.fg2 }
+end
+
 local function wide_statusline()
     return vim.go.columns >= 95
 end
@@ -125,7 +130,7 @@ return {
                             padding = { left = 1, right = 2 },
                         },
                     },
-                    lualine_z = { "location" },
+                    lualine_z = { { "location", color = muted_component_color } },
                 },
             }
         end,

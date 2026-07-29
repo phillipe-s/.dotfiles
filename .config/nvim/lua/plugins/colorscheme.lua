@@ -67,12 +67,12 @@ return {
                 local function barbar_groups()
                     local statuses = {
                         Current = { bg = colors.bg_transparent, fg = colors.text },
-                        Inactive = { bg = colors.bg_float, fg = colors.text_muted },
+                        Inactive = { bg = colors.bg_transparent, fg = colors.text_muted },
                         Visible = { bg = colors.bg_editor, fg = colors.text_muted },
                     }
 
                     local groups = {
-                        BufferTabpageFill = { bg = colors.bg_float },
+                        BufferTabpageFill = { bg = colors.bg_transparent },
                     }
 
                     for status, highlight in pairs(statuses) do

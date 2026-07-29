@@ -25,7 +25,7 @@
 
 | Layer | Tools |
 | --- | --- |
-| Terminal | [Ghostty](https://ghostty.org/) + JetBrains Mono Nerd Font + GitHub Dark Default |
+| Terminal | [Ghostty](https://ghostty.org/) + tmux + GitHub Dark Default |
 | Shell | Zsh + [Zinit](https://github.com/zdharma-continuum/zinit) + [Starship](https://starship.rs/) |
 | Editor | [Neovim](https://neovim.io/) + [lazy.nvim](https://github.com/folke/lazy.nvim) |
 | Navigation | fzf · zoxide · fd · ripgrep · Yazi |
@@ -76,6 +76,7 @@ detect platform
       ├── install everything in the Brewfile
       ├── install Zinit
       ├── link configs with GNU Stow
+      ├── install TPM and configured tmux plugins
       └── configure Atuin and check the login shell
 ```
 
@@ -85,6 +86,7 @@ detect platform
 | `--skip-brew` | Skip Homebrew installation and `brew bundle` |
 | `--skip-apt` | Skip Ubuntu packages installed through `apt` |
 | `--skip-zinit` | Skip the Zinit plugin manager |
+| `--skip-tpm` | Skip Tmux Plugin Manager and tmux plugins |
 | `--skip-stow` | Skip linking dotfiles into `$HOME` |
 | `--help` | Show all available options |
 
@@ -96,6 +98,7 @@ detect platform
 │   ├── ghostty/       # terminal appearance and keybinds
 │   ├── git/           # Git defaults
 │   ├── nvim/          # custom Neovim distribution
+│   ├── tmux/          # persistent sessions and pane workflow
 │   ├── yazi/          # terminal file manager theme
 │   ├── zsh/           # shell, plugins, aliases, and history
 │   └── starship.toml  # prompt configuration
@@ -120,5 +123,6 @@ On Ubuntu, `apt` provides OS-level prerequisites such as Zsh and Linuxbrew build
 
 - GNU Stow will not overwrite existing unmanaged dotfiles. Move or merge any conflicts before rerunning the bootstrap.
 - Zinit downloads the configured Zsh plugins when a new shell starts for the first time.
+- TPM installs the plugins declared in `tmux.conf`; inside tmux, use `Ctrl-a I` to install newly added plugins.
 - Neovim installs its plugins on first launch.
 - The bootstrap does not change your login shell automatically. If needed, it prints the exact `chsh` command for you to review and run.

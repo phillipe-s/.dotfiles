@@ -14,6 +14,7 @@ Options:
   --skip-brew       Do not install Homebrew or run brew bundle.
   --skip-apt        Do not install Ubuntu packages with apt.
   --skip-zinit      Do not install the Zinit plugin manager.
+  --skip-tpm        Do not install Tmux Plugin Manager or tmux plugins.
   --skip-stow       Do not create symlinks with stow.
   --yes             Answer yes to bootstrap prompts.
   -h, --help        Show this help message.
@@ -214,6 +215,37 @@ install_zinit() {
   git clone https://github.com/zdharma-continuum/zinit.git "$zinit_home"
 }
 
+install_tpm() {
+  local tmux_conf
+  local tpm_home
+
+  command_exists git || die "git is required to install Tmux Plugin Manager."
+
+  tmux_conf="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
+  tpm_home="$HOME/.tmux/plugins/tpm"
+
+  if [[ -d "$tpm_home/.git" ]]; then
+    log "Tmux Plugin Manager already installed"
+  else
+    log "Installing Tmux Plugin Manager"
+    mkdir -p "$(dirname "$tpm_home")"
+    git clone https://github.com/tmux-plugins/tpm.git "$tpm_home"
+  fi
+
+  if ! command_exists tmux; then
+    warn "tmux is not installed yet; skipping tmux plugin installation."
+    return 0
+  fi
+
+  if [[ ! -f "$tmux_conf" ]]; then
+    warn "tmux config is not linked at $tmux_conf; skipping tmux plugin installation."
+    return 0
+  fi
+
+  log "Installing tmux plugins"
+  "$tpm_home/bin/install_plugins"
+}
+
 stow_dotfiles() {
   command_exists stow || die "stow is not installed. Run without --skip-brew first, or install stow manually."
 
@@ -263,6 +295,7 @@ check_zsh_shell() {
 SKIP_BREW=0
 SKIP_APT=0
 SKIP_ZINIT=0
+SKIP_TPM=0
 SKIP_STOW=0
 ASSUME_YES=0
 PLATFORM=""
@@ -277,6 +310,9 @@ while [[ $# -gt 0 ]]; do
       ;;
     --skip-zinit)
       SKIP_ZINIT=1
+      ;;
+    --skip-tpm)
+      SKIP_TPM=1
       ;;
     --skip-stow)
       SKIP_STOW=1
@@ -320,6 +356,12 @@ if [[ "$SKIP_STOW" == "0" ]]; then
   stow_dotfiles
 else
   warn "Skipping stow."
+fi
+
+if [[ "$SKIP_TPM" == "0" ]]; then
+  install_tpm
+else
+  warn "Skipping Tmux Plugin Manager setup."
 fi
 
 configure_atuin
