@@ -10,13 +10,21 @@ return {
     {
         "mbbill/undotree",
         event = { "BufReadPost", "BufNewFile" },
-        config = function() vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle) end,
+        config = function()
+            vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+        end,
     },
     {
         "folke/noice.nvim",
         event = "VimEnter",
         dependencies = { "MunifTanjim/nui.nvim" },
-        opts = { lsp = { progress = { enabled = false }}, presets = { lsp_doc_border = true } },
+        opts = { lsp = { progress = { enabled = false } }, presets = { lsp_doc_border = true } },
+    },
+    {
+        "MeanderingProgrammer/render-markdown.nvim",
+        ft = { "markdown" },
+        dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+        opts = { sign = { enabled = false } },
     },
     {
         "HiPhish/rainbow-delimiters.nvim",
