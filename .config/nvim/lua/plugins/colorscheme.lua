@@ -53,6 +53,7 @@ return {
 
                     return {
                         CursorLine = { bg = colors.cursor_line },
+                        TabLineFill = { bg = colors.bg_transparent },
                         NormalFloat = { bg = colors.bg_float },
                         FloatBorder = { fg = colors.border, bg = colors.bg_float },
                         DiagnosticUnderlineInfo = spell_underline,
@@ -65,19 +66,20 @@ return {
 
                 local function barbar_groups()
                     local statuses = {
-                        Current = { bg = colors.bg_editor, fg = colors.text },
+                        Current = { bg = colors.bg_transparent, fg = colors.text },
                         Inactive = { bg = colors.bg_float, fg = colors.text_muted },
                         Visible = { bg = colors.bg_editor, fg = colors.text_muted },
                     }
 
-                    local groups = {}
+                    local groups = {
+                        BufferTabpageFill = { bg = colors.bg_float },
+                    }
 
                     for status, highlight in pairs(statuses) do
                         local prefix = "Buffer" .. status
 
                         groups[prefix] = highlight
                         groups[prefix .. "Mod"] = { bg = highlight.bg, fg = colors.attention }
-                        groups[prefix .. "SignRight"] = { bg = highlight.bg, fg = colors.border }
                         groups[prefix .. "Target"] = { bg = highlight.bg, fg = colors.danger }
                     end
 

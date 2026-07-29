@@ -24,7 +24,7 @@ end
 local function setup_preview_buffers()
     local preview_buf_group = vim.api.nvim_create_augroup("PreviewBuffers", { clear = true })
 
-    autocmd("BufReadPost", {
+    autocmd("BufAdd", {
         group = preview_buf_group,
         desc = "When a new file is being opened, set it as the preview buffer, and close the old",
         callback = on_normal_file_buffer(function(event)
@@ -61,9 +61,9 @@ return {
             animation = false,
             icons = {
                 button = false,
-                separator = { left = "", right = "█" },
+                separator = { left = "", right = "" },
                 separator_at_end = false,
-                inactive = { separator = { left = "", right = "█" } },
+                inactive = { separator = { left = "", right = "" } },
                 pinned = { button = "", filename = true },
             },
         },
