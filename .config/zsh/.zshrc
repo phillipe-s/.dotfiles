@@ -69,6 +69,28 @@ if [[ -r "$ZINIT_HOME/zinit.zsh" ]]; then
     zinit light zsh-users/zsh-syntax-highlighting
 fi
 
+# === Functions ===
+nssh() {
+    if (( $# < 1 || $# > 2 )); then
+        print -u2 "Usage: nssh <ssh-host> [remote-path]"
+        print -u2 "   or: nssh <ssh-host>/<remote-path>"
+        return 2
+    fi
+
+    local ssh_host
+    local remote_path
+
+    if (( $# == 1 )) && [[ "$1" == */* ]]; then
+        ssh_host="${1%%/*}"
+        remote_path="${1#*/}"
+    else
+        ssh_host="$1"
+        remote_path="${2:-.}"
+    fi
+
+    command nvim "oil-ssh://${ssh_host}/${remote_path}"
+}
+
 # === Aliases ===
 if command -v eza &>/dev/null; then
     alias ls='eza --icons --group-directories-first'
