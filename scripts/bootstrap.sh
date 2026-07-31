@@ -3,6 +3,8 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 BREWFILE="$DOTFILES_DIR/Brewfile"
+HOMEBREW_INSTALL_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+HOMEBREW_INSTALLER=""
 
 usage() {
   cat <<'USAGE'
@@ -12,12 +14,14 @@ Bootstrap this dotfiles repo on a new machine.
 
 Options:
   --skip-brew       Do not install Homebrew or run brew bundle.
-  --skip-apt        Do not install Ubuntu packages with apt.
   --skip-zinit      Do not install the Zinit plugin manager.
   --skip-tpm        Do not install Tmux Plugin Manager or tmux plugins.
   --skip-stow       Do not create symlinks with stow.
   --yes             Answer yes to bootstrap prompts.
   -h, --help        Show this help message.
+
+The official Homebrew installer decides whether the host is supported and
+reports any system prerequisites that must be installed manually.
 USAGE
 }
 
@@ -49,65 +53,29 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-detect_platform() {
-  local architecture
-  local distro_id
-  local kernel
-
-  kernel="$(uname -s)"
-  architecture="$(uname -m)"
-
-  case "$kernel" in
-    Darwin)
-      if [[ "$architecture" != "arm64" ]]; then
-        die "Unsupported macOS architecture: $architecture. This script requires Apple silicon (arm64)."
-      fi
-      printf 'macos'
-      ;;
-    Linux)
-      if [[ ! -r /etc/os-release ]]; then
-        die "Cannot identify this Linux distribution because /etc/os-release is unavailable. Only Ubuntu is supported."
-      fi
-
-      distro_id="$(. /etc/os-release && printf '%s' "${ID:-}")"
-      if [[ "$distro_id" != "ubuntu" ]]; then
-        die "Unsupported Linux distribution: ${distro_id:-unknown}. Only Ubuntu is supported."
-      fi
-      printf 'ubuntu'
-      ;;
-    *)
-      die "Unsupported operating system: $kernel. Only Apple silicon macOS and Ubuntu are supported."
-      ;;
-  esac
+cleanup() {
+  if [[ -n "$HOMEBREW_INSTALLER" && -f "$HOMEBREW_INSTALLER" ]]; then
+    rm -f -- "$HOMEBREW_INSTALLER"
+  fi
 }
 
+trap cleanup EXIT
+
 detect_environment() {
-  case "$PLATFORM" in
-    macos)
-      printf 'Apple silicon macOS'
-      ;;
-    ubuntu)
-      if grep -qi microsoft /proc/sys/kernel/osrelease 2>/dev/null; then
-        printf 'Ubuntu (WSL)'
-      else
-        printf 'Ubuntu'
-      fi
-      ;;
-  esac
+  printf '%s (%s)' "$(uname -s)" "$(uname -m)"
 }
 
 load_homebrew() {
-  local brew_paths=()
+  local brew_paths=(
+    /opt/homebrew/bin/brew
+    /usr/local/bin/brew
+    /home/linuxbrew/.linuxbrew/bin/brew
+  )
   local brew_path
 
   if command_exists brew; then
     return 0
   fi
-
-  case "$PLATFORM" in
-    macos) brew_paths=(/opt/homebrew/bin/brew) ;;
-    ubuntu) brew_paths=(/home/linuxbrew/.linuxbrew/bin/brew) ;;
-  esac
 
   for brew_path in "${brew_paths[@]}"; do
     if [[ -x "$brew_path" ]]; then
@@ -118,20 +86,34 @@ load_homebrew() {
 }
 
 install_homebrew() {
+  local bash_path
+
   if command_exists brew; then
     return 0
   fi
+
+  command_exists curl || die "curl is required to download Homebrew. Install curl manually, then rerun this bootstrap."
 
   if ! confirm "Homebrew is not installed. Install it now?"; then
     die "Homebrew is required unless you run with --skip-brew."
   fi
 
+  log "Downloading the official Homebrew installer"
+  HOMEBREW_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/homebrew-install.XXXXXX")"
+  curl -fsSL "$HOMEBREW_INSTALL_URL" -o "$HOMEBREW_INSTALLER"
+  bash_path="$(command -v bash)"
+
   log "Installing Homebrew"
   if [[ "$ASSUME_YES" == "1" ]]; then
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if ! NONINTERACTIVE=1 "$bash_path" "$HOMEBREW_INSTALLER"; then
+      die "Homebrew installation failed. Install the prerequisites reported above, then rerun this bootstrap."
+    fi
   else
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if ! "$bash_path" "$HOMEBREW_INSTALLER"; then
+      die "Homebrew installation failed. Install the prerequisites reported above, then rerun this bootstrap."
+    fi
   fi
+
   load_homebrew
   command_exists brew || die "Homebrew installed, but brew is still not on PATH. Restart your shell and rerun this script."
 }
@@ -146,45 +128,6 @@ ensure_xdg_dirs() {
     "$HOME/.local/share" \
     "$HOME/.local/state" \
     "$HOME/.local/state/zsh"
-}
-
-install_ubuntu_packages() {
-  local packages=()
-
-  if [[ "$PLATFORM" != "ubuntu" ]]; then
-    return 0
-  fi
-
-  if ! command_exists brew; then
-    packages+=(build-essential procps curl file git)
-  fi
-
-  if ! command_exists zsh; then
-    packages+=(zsh)
-  fi
-
-  if [[ "${#packages[@]}" == "0" ]]; then
-    return 0
-  fi
-
-  if [[ "$SKIP_APT" == "1" ]]; then
-    warn "Skipping Ubuntu packages: ${packages[*]}"
-    return 0
-  fi
-
-  if ! command_exists apt-get; then
-    warn "Install your distro's equivalents of: ${packages[*]}"
-    return 0
-  fi
-
-  if ! confirm "Install Ubuntu packages with apt-get: ${packages[*]}?"; then
-    warn "Skipping Ubuntu packages: ${packages[*]}"
-    return 0
-  fi
-
-  log "Installing Ubuntu packages"
-  sudo apt-get update
-  sudo apt-get install -y "${packages[@]}"
 }
 
 install_brew_bundle() {
@@ -293,78 +236,77 @@ check_zsh_shell() {
 }
 
 SKIP_BREW=0
-SKIP_APT=0
 SKIP_ZINIT=0
 SKIP_TPM=0
 SKIP_STOW=0
 ASSUME_YES=0
-PLATFORM=""
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --skip-brew)
-      SKIP_BREW=1
-      ;;
-    --skip-apt)
-      SKIP_APT=1
-      ;;
-    --skip-zinit)
-      SKIP_ZINIT=1
-      ;;
-    --skip-tpm)
-      SKIP_TPM=1
-      ;;
-    --skip-stow)
-      SKIP_STOW=1
-      ;;
-    --yes)
-      ASSUME_YES=1
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    *)
-      usage
-      die "Unknown option: $1"
-      ;;
-  esac
-  shift
-done
+main() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --skip-brew)
+        SKIP_BREW=1
+        ;;
+      --skip-zinit)
+        SKIP_ZINIT=1
+        ;;
+      --skip-tpm)
+        SKIP_TPM=1
+        ;;
+      --skip-stow)
+        SKIP_STOW=1
+        ;;
+      --yes)
+        ASSUME_YES=1
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      *)
+        usage
+        die "Unknown option: $1"
+        ;;
+    esac
+    shift
+  done
 
-PLATFORM="$(detect_platform)"
+  load_homebrew
 
-log "Bootstrapping dotfiles from $DOTFILES_DIR"
-log "Detected environment: $(detect_environment)"
-ensure_xdg_dirs
-load_homebrew
-install_ubuntu_packages
+  log "Bootstrapping dotfiles from $DOTFILES_DIR"
+  log "Detected environment: $(detect_environment)"
+  ensure_xdg_dirs
 
-if [[ "$SKIP_BREW" == "0" ]]; then
-  install_brew_bundle
-else
-  warn "Skipping Homebrew setup."
+  if [[ "$SKIP_BREW" == "0" ]]; then
+    install_brew_bundle
+  else
+    warn "Skipping Homebrew setup."
+  fi
+
+  if [[ "$SKIP_ZINIT" == "0" ]]; then
+    install_zinit
+  else
+    warn "Skipping Zinit setup."
+  fi
+
+  if [[ "$SKIP_STOW" == "0" ]]; then
+    stow_dotfiles
+  else
+    warn "Skipping stow."
+  fi
+
+  if [[ "$SKIP_TPM" == "0" ]]; then
+    install_tpm
+  else
+    warn "Skipping Tmux Plugin Manager setup."
+  fi
+
+  configure_atuin
+  check_zsh_shell
+
+  log "Done. Open a new terminal session to load the zsh environment."
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
 fi
-
-if [[ "$SKIP_ZINIT" == "0" ]]; then
-  install_zinit
-else
-  warn "Skipping Zinit setup."
-fi
-
-if [[ "$SKIP_STOW" == "0" ]]; then
-  stow_dotfiles
-else
-  warn "Skipping stow."
-fi
-
-if [[ "$SKIP_TPM" == "0" ]]; then
-  install_tpm
-else
-  warn "Skipping Tmux Plugin Manager setup."
-fi
-
-configure_atuin
-check_zsh_shell
-
-log "Done. Open a new terminal session to load the zsh environment."

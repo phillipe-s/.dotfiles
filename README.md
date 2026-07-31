@@ -2,77 +2,63 @@
 
 # `~/.dotfiles`
 
-[![macOS](https://img.shields.io/badge/macOS-Apple_silicon-000000?style=for-the-badge&logo=apple&logoColor=white)](#support)
-[![Ubuntu](https://img.shields.io/badge/Ubuntu-native_%2F_WSL-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](#support)
-[![Zsh](https://img.shields.io/badge/shell-Zsh-F15A24?style=for-the-badge&logo=zsh&logoColor=white)](https://www.zsh.org/)
-[![Neovim](https://img.shields.io/badge/editor-Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white)](https://neovim.io/)
-[![Stow](https://img.shields.io/badge/managed_with-GNU_Stow-5E5E5E?style=for-the-badge&logo=gnu&logoColor=white)](https://www.gnu.org/software/stow/)
+[![macOS and Linux](./assets/platform-badge.svg)](#support)
+[![Zsh](./assets/shell-badge.svg)](https://www.zsh.org/)
+[![Neovim](./assets/editor-badge.svg)](https://neovim.io/)
+[![Stow](./assets/stow-badge.svg)](https://www.gnu.org/software/stow/)
 
-<img src="./assets/terminal-preview.jpg" alt="Ghostty terminal running the dotfiles setup against a neon city wallpaper" width="100%">
-
-<sub>Ghostty · Zsh · Starship · GitHub Dark Default</sub>
+<img src="./assets/terminal-preview.jpg" alt="Ghostty terminal running fastfetch" width="100%">
 
 </div>
 
-## Lean, Minimal & Feature Rich 
+## Features
 
-- **⚡ A shell that keeps up** — Zsh, Zinit, Starship, fzf-tab, autosuggestions, and syntax highlighting.
-- **🧠 An editor with teeth** — Custom Neovim powered by lazy.nvim, LSP, Treesitter, Blink, Snacks, and Copilot.
-- **🧭 Navigation without friction** — Jump with zoxide, search with fzf and ripgrep, and browse files with Yazi.
-- **♻️ Rebuildable by design** — Homebrew installs the toolchain while GNU Stow puts every config in its place.
+> **Lean, extensible, portable, and feature-rich.**
+>
+> Keep the core experience of the terminal with improvements around the edge. No needing to rewrite muscle memory or learn new keymaps.
 
-## Stack
-
-| Layer | Tools |
+| Feature | Description |
 | --- | --- |
-| Terminal | [Ghostty](https://ghostty.org/) + tmux + GitHub Dark Default |
-| Shell | Zsh + [Zinit](https://github.com/zdharma-continuum/zinit) + [Starship](https://starship.rs/) |
-| Editor | [Neovim](https://neovim.io/) + [lazy.nvim](https://github.com/folke/lazy.nvim) |
-| Navigation | fzf · zoxide · fd · ripgrep · Yazi |
-| Daily CLI | bat · eza · lazygit · git-delta · Atuin · btop |
-| Runtimes | fnm · uv |
-| Packages | Homebrew on macOS · Linuxbrew on Ubuntu |
+| Theme | Github Dark Default. This config is optimised heavily for this theme. |
+| Terminal | Ghostty. Any modern terminal should work. |
+| Editor | Both a custom neovim distribution ([found here](./.config/nvim/)) and a vim config - because most the time vim is all you need. |
+| Multiplexer | A minimal tmux setup with the option of herdr for AI integration (note: herdr still has some rough edges as of writing). |
+| CLI&nbsp;Tooling | Modern cli tooling without going overboard. |
+| SSH&nbsp;Editing | The `nssh <ssh-host> [remote-path]` helper opens a remote path in Neovim over SSH using oil. It is not a replacement for an on-host neovim config, but still works. 
 
-The full package manifest lives in [`Brewfile`](./Brewfile).
-
-## Quick start
+## Quick Start
 
 > [!IMPORTANT]
-> This is a personal setup. Read the bootstrap script and fork the repo before running it as your own.
+> This is a personal setup. If for you stumble across this and wish to use it please read the bootstrap script and fork the repo. If you wish to not use brew use the `--skip-brew` flag. You can find the package manifest in [`Brewfile`](./Brewfile)
 
 ### SSH
 
 ```bash
 git clone git@github.com:sirbastio/.dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./scripts/bootstrap.sh
+./scripts/bootstrap.sh --yes # unattended setup
 ```
 
 <details>
-<summary><strong>Using HTTPS instead?</strong></summary>
+<summary><strong>HTTPS instead?</strong></summary>
 
 ```bash
 git clone https://github.com/sirbastio/.dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./scripts/bootstrap.sh
+./scripts/bootstrap.sh --yes
 ```
 
 </details>
 
-For an unattended install:
+### Bootstrap Script
 
-```bash
-./scripts/bootstrap.sh --yes
-```
-
-## What the bootstrap does
 
 ```text
-detect platform
+start bootstrap
       │
+      ├── report the host from `uname`
       ├── create XDG directories
-      ├── install system prerequisites on Ubuntu
-      ├── install Homebrew / Linuxbrew
+      ├── run the official Homebrew installer
       ├── install everything in the Brewfile
       ├── install Zinit
       ├── link configs with GNU Stow
@@ -84,40 +70,26 @@ detect platform
 | --- | --- |
 | `--yes` | Accept bootstrap prompts for an unattended setup |
 | `--skip-brew` | Skip Homebrew installation and `brew bundle` |
-| `--skip-apt` | Skip Ubuntu packages installed through `apt` |
 | `--skip-zinit` | Skip the Zinit plugin manager |
 | `--skip-tpm` | Skip Tmux Plugin Manager and tmux plugins |
 | `--skip-stow` | Skip linking dotfiles into `$HOME` |
 | `--help` | Show all available options |
 
-## Repository map
+## Repository Map
 
 ```text
 .
-├── .config/
-│   ├── ghostty/       # terminal appearance and keybinds
-│   ├── git/           # Git defaults
-│   ├── nvim/          # custom Neovim distribution
-│   ├── tmux/          # persistent sessions and pane workflow
-│   ├── yazi/          # terminal file manager theme
-│   ├── zsh/           # shell, plugins, aliases, and history
-│   └── starship.toml  # prompt configuration
+├── .config/    # application and tool configurations
 ├── scripts/
-│   └── bootstrap.sh   # fresh-machine installer
-├── .zshenv            # XDG paths and environment
-└── Brewfile           # CLI tool manifest
+├── .zshenv     # shared Zsh environment and XDG paths
+└── Brewfile    # Homebrew package manifest
 ```
 
 ## Support
 
-| Environment | Status | Package prefix |
-| --- | :---: | --- |
-| Apple silicon macOS | ✅ | `/opt/homebrew` |
-| Ubuntu | ✅ | `/home/linuxbrew/.linuxbrew` |
-| Ubuntu on WSL | ✅ | `/home/linuxbrew/.linuxbrew` |
-| Intel macOS / other Linux distributions | ❌ | The script exits before making changes |
+The bootstrap does not detect Linux distributions or any  system package manager. It requires Bash and `curl`, then delegates host detection and prerequisite checks to the [official Homebrew installer](https://docs.brew.sh/Installation).
 
-On Ubuntu, `apt` provides OS-level prerequisites such as Zsh and Linuxbrew build tools. Everything else is installed through the Brewfile.
+If Homebrew cannot install, read its error, install the reported system prerequisites manually, and rerun the bootstrap. Once Homebrew is available, Zsh and the rest of the user-facing toolchain are installed through the Brewfile.
 
 ## Good to know
 

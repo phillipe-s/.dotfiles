@@ -1,23 +1,10 @@
 <div align="center">
 
-# Neovim, tuned.
-
-### Lean, minimal, maintainable and feature rich 
-
-Keep Vim's muscle memory. Remove the friction.
-
-[![Neovim](https://img.shields.io/badge/Neovim-custom_build-57A143?style=for-the-badge&logo=neovim&logoColor=white)](https://neovim.io/)
-[![Lua](https://img.shields.io/badge/config-Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white)](https://www.lua.org/)
-[![lazy.nvim](https://img.shields.io/badge/plugins-lazy.nvim-2F2F2F?style=for-the-badge&logo=lazyvim&logoColor=white)](https://github.com/folke/lazy.nvim)
-[![GitHub Dark](https://img.shields.io/badge/theme-GitHub_Dark_Default-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/projekt0n/github-nvim-theme)
-
-<img src="../../assets/neovim-preview.jpg" alt="Custom Neovim dashboard running in Ghostty" width="100%">
-
-[Back to the dotfiles](../../README.md)
+# Neovim
 
 </div>
 
-## Built for flow
+<img src="../../assets/neovim-preview.jpg" alt="Custom Neovim dashboard running in Ghostty" width="100%">
 
 > **Minimal at the core. Powerful at the edges.**
 >
@@ -28,11 +15,11 @@ Keep Vim's muscle memory. Remove the friction.
 - **Quietly intelligent** — LSP, completion, diagnostics, formatting, spelling, and Copilot are there when needed.
 - **Visually cohesive** — every major surface is tuned around GitHub Dark Default.
 
-## What makes it different
+## Features
 
-### Preview buffers that clean up after themselves
+### Preview Buffers
 
-Opening a file marks it as a temporary preview with a `◌` in the buffer line. Open another file without touching the first and the old preview disappears automatically—similar to preview tabs in VS Code.
+Opening a file marks it as a temporary preview with a `◌` in the buffer line. Open another file without touching the first and the old preview disappears automatically. This is similar to preview tabs in VS Code.
 
 ```text
 open file A ◌  →  open file B ◌  →  file A closes
@@ -62,7 +49,7 @@ Cursor position and fold state are saved when a file leaves the window and resto
 | --- | --- | --- |
 | Mode | `jk` or `esc` | Leave insert mode |
 | Files | `Ctrl+P` | Smart project picker |
-| Files | `<leader>pw` | Search text across the project |
+| Text | `<leader>pw` | Search text across the project |
 | Explorer | `<leader>e` / `<leader>E` | Open Mini Files at the working directory / current file |
 | Explorer | `-` | Open the parent directory with Oil |
 | Buffers | `<leader>bp` / `<leader>bd` | Pin or close the current buffer |
@@ -153,7 +140,3 @@ Useful maintenance commands:
         ├── picker.lua     # project-aware search
         └── ...            # UI, completion, diagnostics, and more
 ```
-
-<div align="center">
-  <sub>Built to disappear when the work begins.</sub>
-</div>
