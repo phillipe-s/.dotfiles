@@ -36,7 +36,7 @@
 ```bash
 git clone git@github.com:sirbastio/.dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./scripts/bootstrap.sh --yes # unattended setup
+./scripts/bootstrap.sh --yes # accept the bootstrap confirmation
 ```
 
 <details>
@@ -68,7 +68,7 @@ start bootstrap
 
 | Flag | Effect |
 | --- | --- |
-| `--yes` | Accept bootstrap prompts for an unattended setup |
+| `--yes` | Accept the bootstrap confirmation; Homebrew may still prompt |
 | `--skip-brew` | Skip Homebrew installation and `brew bundle` |
 | `--skip-zinit` | Skip the Zinit plugin manager |
 | `--skip-tpm` | Skip Tmux Plugin Manager and tmux plugins |

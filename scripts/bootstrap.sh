@@ -3,8 +3,6 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 BREWFILE="$DOTFILES_DIR/Brewfile"
-HOMEBREW_INSTALL_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-HOMEBREW_INSTALLER=""
 
 usage() {
   cat <<'USAGE'
@@ -53,14 +51,6 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-cleanup() {
-  if [[ -n "$HOMEBREW_INSTALLER" && -f "$HOMEBREW_INSTALLER" ]]; then
-    rm -f -- "$HOMEBREW_INSTALLER"
-  fi
-}
-
-trap cleanup EXIT
-
 detect_environment() {
   printf '%s (%s)' "$(uname -s)" "$(uname -m)"
 }
@@ -86,8 +76,6 @@ load_homebrew() {
 }
 
 install_homebrew() {
-  local bash_path
-
   if command_exists brew; then
     return 0
   fi
@@ -98,21 +86,8 @@ install_homebrew() {
     die "Homebrew is required unless you run with --skip-brew."
   fi
 
-  log "Downloading the official Homebrew installer"
-  HOMEBREW_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/homebrew-install.XXXXXX")"
-  curl -fsSL "$HOMEBREW_INSTALL_URL" -o "$HOMEBREW_INSTALLER"
-  bash_path="$(command -v bash)"
-
   log "Installing Homebrew"
-  if [[ "$ASSUME_YES" == "1" ]]; then
-    if ! NONINTERACTIVE=1 "$bash_path" "$HOMEBREW_INSTALLER"; then
-      die "Homebrew installation failed. Install the prerequisites reported above, then rerun this bootstrap."
-    fi
-  else
-    if ! "$bash_path" "$HOMEBREW_INSTALLER"; then
-      die "Homebrew installation failed. Install the prerequisites reported above, then rerun this bootstrap."
-    fi
-  fi
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   load_homebrew
   command_exists brew || die "Homebrew installed, but brew is still not on PATH. Restart your shell and rerun this script."
