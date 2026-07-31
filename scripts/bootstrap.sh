@@ -89,6 +89,15 @@ install_homebrew() {
   log "Installing Homebrew"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+  if [[ "$(uname -s)" == "Linux" ]]; then
+    warn "Review the Homebrew installer output above for required system packages (for example, build-essential or bubblewrap)."
+    warn "Install any requested packages with your distribution's package manager before continuing."
+
+    if ! confirm "Have you installed any system packages requested by Homebrew?"; then
+      die "Install Homebrew's requested system packages, then rerun the bootstrap."
+    fi
+  fi
+
   load_homebrew
   command_exists brew || die "Homebrew installed, but brew is still not on PATH. Restart your shell and rerun this script."
 }
