@@ -190,11 +190,35 @@ configure_atuin() {
 }
 
 check_zsh_shell() {
+  local brew_path
+  local brew_prefix
   local zsh_path
   local current_shell
 
   if ! command_exists zsh; then
-    warn "zsh is not installed or not on PATH. The dotfiles were linked, but zsh config will not be used yet."
+    warn "zsh is not installed, not executable, or not on PATH. The dotfiles were linked, but zsh config will not be used yet."
+
+    if command_exists brew; then
+      brew_path="$(command -v brew)"
+      brew_prefix="$(brew --prefix 2>/dev/null || true)"
+
+      warn "For a missing or broken Homebrew zsh installation, try:"
+      warn "  eval \"\$($brew_path shellenv)\""
+      warn "  brew install zsh"
+      warn "  brew link --overwrite zsh"
+
+      if [[ -n "$brew_prefix" ]]; then
+        warn "  $brew_prefix/bin/zsh --version"
+      else
+        warn "  zsh --version"
+      fi
+
+      warn "If Homebrew says zsh is already installed but verification still fails, try:"
+      warn "  brew reinstall zsh"
+      warn "  brew link --overwrite zsh"
+      warn "Do not add zsh to /etc/shells until the version command succeeds."
+    fi
+
     return 0
   fi
 
@@ -207,7 +231,10 @@ check_zsh_shell() {
 
   warn "Your login shell is $current_shell, not zsh."
   warn "To switch after reviewing the path, run: chsh -s $zsh_path"
-  warn "If chsh rejects it, add $zsh_path to /etc/shells first."
+  warn "If chsh reports an invalid shell, verify and register it first:"
+  warn "  $zsh_path --version"
+  warn "  grep -Fxq '$zsh_path' /etc/shells || printf '%s\\n' '$zsh_path' | sudo tee -a /etc/shells"
+  warn "  chsh -s $zsh_path"
 }
 
 SKIP_BREW=0
