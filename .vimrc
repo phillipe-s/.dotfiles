@@ -103,7 +103,9 @@ silent! set autocomplete
 silent! set autocompletedelay=100
 set nrformats=bin,hex               " controls number formats `Ctrl-A` and `Ctrl-D` recognise when incremending/decrementing
 set wildmenu                        " enables a visual list of command-line completions e.g. pressing `Tab` after `:edit`
-set wildoptions=pum,tagfile
+set wildoptions=
+silent! set wildoptions+=pum
+silent! set wildoptions+=tagfile
 set backspace=indent,eol,start      " better backspace behaviour
 
 " CLIPBOARD
