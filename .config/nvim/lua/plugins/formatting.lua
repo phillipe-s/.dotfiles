@@ -7,7 +7,7 @@ return {
         formatters_by_ft = {
             lua = { "stylua" },
             python = { "ruff_format" },
-            c = { "clang_format" },
+            c = { "clang-format" },
         },
         formatters = {
             stylua = {
@@ -26,5 +26,6 @@ return {
     init = function()
         -- use conform for formatting instead of vim's built-in formatter
         vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+        vim.keymap.set("n", "<leader>F", "mzgg=G`z", { desc = "[F]ormat with Vim (keep cursor position)" })
     end,
 }
